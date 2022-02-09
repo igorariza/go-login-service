@@ -1,0 +1,18 @@
+#SERVER fast http
+export PORT_VAULT_SERVICE=8200
+export PATH_VAULT_SERVICE='./vault/data/'
+export VAULT_TOKEN='s.KGk6j8k9PETh7QRaYoXjgI0A'
+export VAULT_ADDR='http://127.0.0.1:8200'
+export VAULT_UNSEAL_KEY='Z/EJX/jY3gkrjvM5H4QuWnTY1EMrt5LUBnZcEsSGysE='
+export DB_USER=admin
+export DB_PASSWORD=admin
+export DB_HOST=localhost
+export DB_PORT=5432
+export DB_NAME=ccp-vault
+export DB_SSL_MODE=
+export DB_TIMEZONE=
+# Others
+go env -w GO111MODULE=on
+go env -w GOPRIVATE=github.com/cuemby/ccp-sdk
+
+

@@ -1,0 +1,68 @@
+version: "3.8"
+
+services:
+  # ccp-vault-service:
+  #     container_name: "ccp-vault-service"
+  #     restart: on-failure
+  #     build: 
+  #       context: "./"
+  #       dockerfile: Dockerfile
+  #     ports:
+  #       - 8000:8080
+  #     volumes:
+  #       - ./api:/vault/src/app/
+  #     depends_on: 
+  #       - vault-server
+  #       - db-service
+  #     networks: 
+  #       - fullstack
+
+  vault-server:
+    container_name: "ccp-vault-server"
+    image: vault:1.2.1
+    restart: always
+    command: [ 'vault', 'server', '-config=/vault/config' ]
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: "myroot"
+      VAULT_LOCAL_CONFIG: '{"backend": {"file": {"path": "/vault/file"}}, "default_lease_ttl": "168h", "max_lease_ttl": "720h"}'
+      VAULT_SUPPLEMENTAL_CONFIG: '{"ui":true, "listener": {"tcp":{"address": "0.0.0.0:8200", "tls_disable": 1}}}'
+      VAULT_ADDR: "http://127.0.0.1:8200"
+      VAULT_API_ADDR: "http://127.0.0.1:8200"
+    ports:
+      - "8200:8200"
+    volumes:
+      - ./config:/vault/config
+      - ./vault:/vault/file
+      - ./unseal:/vault/unseal
+      - ./util/docker-entrypoint.sh:/usr/local/bin/docker-entrypoint.sh
+    # depends_on:
+    #   - db-service
+    cap_add:
+      - IPC_LOCK
+    networks: 
+      - fullstack
+
+  # db-service:
+  #   image: mysql:5.7.22
+  #   container_name: "db-service"
+  #   restart: always
+  #   environment: 
+  #     MYSQL_DATABASE: admin
+  #     MYSQL_USER: root
+  #     MYSQL_PASSWORD: root
+  #     MYSQL_ROOT_PASSWORD: "admin"
+  #   volumes: 
+  #     - ./backend/.dbdata:/var/lib/mysql
+  #     - ./util/init-script.sql:/docker-entrypoint-initdb.d/init-script.sql
+  #   ports: 
+  #     - 33066:3306
+  #   networks: 
+  #     - fullstack 
+
+networks: 
+  fullstack:
+    driver: bridge
+
+
+    
+    
